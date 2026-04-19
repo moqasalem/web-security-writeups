@@ -1,4 +1,3 @@
-```markdown
 # file-upload-vulnerabilities
 
 ## 📌 مقدمة

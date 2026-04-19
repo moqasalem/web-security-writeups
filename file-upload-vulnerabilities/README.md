@@ -204,7 +204,7 @@ AddType application/x-httpd-php .jpg
 
 إذا لم يتم تنظيف المدخلات، يمكن استخدام تسلسلات مثل:
 
-```text
+
 ../../../shell.php
 
 ## 📌 الخلاصة

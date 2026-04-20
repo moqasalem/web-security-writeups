@@ -1,146 +1,245 @@
-API Testing
-🔹 ما هو API Testing؟
+````markdown
+# API Testing
 
-اختبار APIs (Application Programming Interfaces) هو عملية تحليل واختبار الواجهات التي تسمح للتطبيقات بالتواصل مع بعضها.
+## 🔹 ما هو API Testing؟
+اختبار **واجهات برمجة التطبيقات (APIs - Application Programming Interfaces)** هو عملية تحليل واختبار الواجهات التي تسمح للتطبيقات بالتواصل مع بعضها.
 
 📌 معظم تطبيقات الويب الحديثة تعتمد بشكل أساسي على APIs، لذلك:
+- أي ثغرة في الـ API قد تؤثر مباشرة على:
+  - **سرية البيانات (Confidentiality)**
+  - **سلامتها (Integrity)**
+  - **توفرها (Availability)**
 
-أي ثغرة في الـ API قد تؤثر مباشرة على سرية البيانات (Confidentiality) وسلامتها (Integrity) وتوفرها (Availability)
+---
 
-🔹 لماذا يعتبر API Testing مهم؟
-APIs هي نقطة الدخول الحقيقية للتطبيق (backend)
-أحيانًا لا يتم استخدامها بالكامل في الواجهة (Hidden endpoints)
-قد تحتوي على ثغرات أخطر من الواجهة الأمامية
+## 🔹 لماذا يعتبر API Testing مهم؟
+- APIs تمثل نقطة الدخول الحقيقية للتطبيق (**Backend**)
+- قد تحتوي على **Endpoints مخفية** غير مستخدمة في الواجهة
+- أحيانًا تكون أكثر عرضة للثغرات مقارنة بالواجهة الأمامية
 
 📌 مثال:
-حتى لو الواجهة تمنعك من تعديل isAdmin، قد يسمح الـ API بذلك!
+حتى لو الواجهة تمنع تعديل `isAdmin`، قد يسمح الـ API بذلك.
 
-🔹 Recon (جمع المعلومات)
+---
+
+## 🔹 Recon (جمع المعلومات)
 
 أول خطوة في اختبار الـ API هي:
+> جمع أكبر قدر ممكن من المعلومات عن الـ API
 
-معرفة أكبر قدر ممكن من المعلومات عن الـ API (Endpoints, Parameters, Methods)
+مثل:
+- Endpoints
+- Parameters
+- HTTP Methods
 
-🔍 اكتشاف Endpoints
+---
+
+### 🔍 اكتشاف Endpoints
 
 مثال:
-
+```http
 GET /api/books HTTP/1.1
+````
 
 📌 هذا endpoint يعيد قائمة كتب
 
-🔍 أماكن شائعة للبحث:
+---
+
+### 🔍 أماكن شائعة للبحث
+
+```text
 /api
 /swagger/index.html
 /openapi.json
+```
 
 📌 هذه المسارات قد تحتوي على توثيق كامل للـ API
 
-🔍 تحليل المسارات
+---
+
+### 🔍 تحليل المسارات
 
 إذا وجدت:
 
+```text
 /api/v1/users/123
+```
 
 جرب:
 
+```text
 /api/v1
 /api
 /api/v1/users
-🔹 طرق اختبار APIs
-1. اختبار الـ Endpoints غير المستخدمة
-بعض endpoints غير مرتبطة بالواجهة
-لكنها ما زالت تعمل
+```
+
+---
+
+## 🔹 طرق اختبار APIs
+
+### 1. اختبار Endpoints غير المستخدمة
+
+بعض الـ endpoints غير مرتبطة بالواجهة لكنها لا تزال تعمل
 
 📌 مثال:
 
+```http
 DELETE /api/users/carlos
-2. استغلال Mass Assignment
+```
+
+---
+
+### 2. استغلال Mass Assignment
 
 إذا كان السيرفر يربط المدخلات مباشرة بالكائن:
 
+```json
 {
   "username": "wiener",
   "isAdmin": true
 }
+```
 
-📌 قد تحصل على صلاحيات Admin!
+📌 قد يؤدي ذلك إلى الحصول على صلاحيات Admin
 
-3. Server-Side Parameter Pollution
+---
 
-إرسال parameters متعددة لنفس القيمة:
+### 3. Server-Side Parameter Pollution
 
+إرسال نفس الباراميتر أكثر من مرة:
+
+```text
 userId=1&userId=2
+```
 
 📌 قد يسبب سلوك غير متوقع في السيرفر
 
-4. التلاعب بالـ HTTP Methods
+---
 
-جرب تغيير:
+### 4. التلاعب بالـ HTTP Methods
 
+جرب تغيير نوع الطلب:
+
+```text
 GET → POST → PUT → PATCH → DELETE
+```
 
-📌 أحيانًا الحماية تكون فقط على method معين
+📌 أحيانًا الحماية تكون مفعلة على method معين فقط
 
-5. اختبار Content-Type
+---
 
-مثلاً:
+### 5. اختبار Content-Type
 
+مثال:
+
+```http
 Content-Type: application/json
+```
 
 جرب تغييره إلى:
 
+```text
 application/xml
 text/plain
+```
 
-📌 قد يكشف parsing مختلف أو ثغرات
+📌 قد يؤدي إلى اختلاف في معالجة البيانات (Parsing)
 
-🔹 أدوات مهمة
-Burp Suite (Proxy + Repeater + Intruder)
-Postman
-SoapUI
+---
+
+## 🔹 أدوات مهمة
+
+* Burp Suite (Proxy + Repeater + Intruder)
+* Postman
+* SoapUI
 
 📌 يمكن استخدام أدوات لتحليل OpenAPI تلقائيًا
 
-🔹 أمثلة على ثغرات API
-Broken Access Control
-Mass Assignment
-Information Disclosure
-Rate Limiting bypass
-Injection (SQL / NoSQL)
-🔹 طرق الحماية (Mitigation)
-1. حماية التوثيق (Documentation)
-لا تترك Swagger مكشوف للعامة
-2. استخدام Allowlist
-تحديد parameters المسموحة فقط
-3. التحقق من HTTP Methods
-السماح فقط بالـ methods المطلوبة
-4. التحقق من Content-Type
-رفض أي نوع غير متوقع
-5. حماية جميع الإصدارات
-/v1/, /v2/ يجب تأمينها كلها
-6. رسائل أخطاء عامة
-لا تكشف تفاصيل السيرفر
-🔹 أشهر Labs في PortSwigger
-Exploiting API using documentation
-Finding unused endpoints
-Mass Assignment exploitation
-Server-side parameter pollution
+---
 
-📌 هذه labs تغطي سيناريوهات واقعية جدًا
+## 🔹 أمثلة على ثغرات API
 
-🔹 ملاحظات مهمة أثناء الاختبار
-راقب الـ traffic باستخدام Burp
-ابحث عن endpoints مخفية
-لا تعتمد فقط على الواجهة
-جرّب تغيير كل شيء (method / headers / body)
-🔹 الخلاصة
+* Broken Access Control
+* Mass Assignment
+* Information Disclosure
+* Rate Limiting Bypass
+* Injection (SQL / NoSQL)
+
+---
+
+## 🔹 طرق الحماية (Mitigation)
+
+### 1. حماية التوثيق (Documentation)
+
+* لا تترك Swagger مكشوف للعامة
+
+### 2. استخدام Allowlist
+
+* السماح فقط بالـ parameters المطلوبة
+
+### 3. التحقق من HTTP Methods
+
+* السماح فقط بالطرق اللازمة
+
+### 4. التحقق من Content-Type
+
+* رفض أي نوع غير متوقع
+
+### 5. حماية جميع الإصدارات
+
+* تأمين جميع النسخ:
+
+```text
+/v1/
+/v2/
+```
+
+### 6. استخدام رسائل أخطاء عامة
+
+* عدم كشف تفاصيل السيرفر
+
+---
+
+## 🔹 أشهر Labs في PortSwigger
+
+* Exploiting API using documentation
+* Finding unused endpoints
+* Mass Assignment exploitation
+* Server-side parameter pollution
+
+📌 هذه labs تحاكي سيناريوهات واقعية
+
+---
+
+## 🔹 ملاحظات مهمة أثناء الاختبار
+
+* راقب الـ traffic باستخدام Burp
+* ابحث عن endpoints مخفية
+* لا تعتمد فقط على الواجهة
+* جرّب تغيير كل شيء:
+
+  * Method
+  * Headers
+  * Body
+
+---
+
+## 🔹 الخلاصة
 
 ثغرات API تحدث عندما:
 
-السيرفر يثق بمدخلات المستخدم أو لا يفرض قيود كافية على endpoints
+> السيرفر يثق بمدخلات المستخدم أو لا يفرض قيود كافية على endpoints
 
-📌 ومع انتشار الـ APIs، أصبحت هذه الثغرات من أهم أهداف الـ Bug Bounty والـ Pentesting
+📌 ومع انتشار APIs، أصبحت هذه الثغرات من أهم أهداف:
 
-🔗 المصدر
-https://portswigger.net/web-security/api-testing
+* Bug Bounty
+* Pentesting
+
+---
+
+## 🔗 المصدر
+
+[https://portswigger.net/web-security/api-testing](https://portswigger.net/web-security/api-testing)
+
+```
+```
